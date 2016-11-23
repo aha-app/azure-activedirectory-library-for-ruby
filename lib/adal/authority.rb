@@ -32,12 +32,12 @@ module ADAL
   class Authority
     include Logging
 
-    AUTHORIZE_PATH = '/oauth2/authorize'
+    AUTHORIZE_PATH = '/oauth2/v2.0/authorize'
     COMMON_TENANT = 'common'
     DISCOVERY_TEMPLATE = URITemplate.new('https://{host}/common/discovery/' \
       'instance?authorization_endpoint={endpoint}&api-version=1.0')
     TENANT_DISCOVERY_ENDPOINT_KEY = 'tenant_discovery_endpoint'
-    TOKEN_PATH = '/oauth2/token'
+    TOKEN_PATH = '/oauth2/v2.0/token'
     WELL_KNOWN_AUTHORITY_HOSTS = [
       'login.windows.net',
       'login.microsoftonline.com',

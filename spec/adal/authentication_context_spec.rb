@@ -41,7 +41,7 @@ describe ADAL::AuthenticationContext do
         authorization_url =
           auth_ctx.authorization_request_url(resource, client_id, redirect_uri)
         expect(authorization_url.to_s.strip)
-          .to eq "https://#{AUTHORITY}/#{TENANT}/oauth2/authorize?client_id=" \
+          .to eq "https://#{AUTHORITY}/#{TENANT}/oauth2/v2.0/authorize?client_id=" \
                  "#{client_id}&response_mode=form_post&redirect_uri=http%3A%2" \
                  'F%2Fcontoso.com%2Flogin&resource=http%3A%2F%2Fgraph.windows' \
                  '.net&response_type=code'
@@ -54,7 +54,7 @@ describe ADAL::AuthenticationContext do
         authorization_url = auth_ctx.authorization_request_url(
           resource, client_id, redirect_uri, params)
         expect(authorization_url.to_s.strip)
-          .to eq "https://#{AUTHORITY}/#{TENANT}/oauth2/authorize?client_id=" \
+          .to eq "https://#{AUTHORITY}/#{TENANT}/oauth2/v2.0/authorize?client_id=" \
                  "#{client_id}&response_mode=form_post&redirect_uri=http%3A%2" \
                  'F%2Fcontoso.com%2Flogin&resource=http%3A%2F%2Fgraph.windows' \
                  '.net&response_type=code&foo=bar'
@@ -68,7 +68,7 @@ describe ADAL::AuthenticationContext do
 
     it 'should put the correlation id on all request headers' do
       auth_ctx.correlation_id = correlation_id
-      stub_request(:post, %r{.*#{TENANT}\/oauth2\/token})
+      stub_request(:post, %r{.*#{TENANT}\/oauth2\/v2.0\/token})
         .with(headers: { 'client-request-id' => correlation_id })
         .and_return(body: '{"access_token":"my access token"}')
       result = auth_ctx.acquire_token_for_user(RESOURCE, CLIENT_ID, user)

@@ -44,7 +44,7 @@ RSpec.configure do |config|
     # Any network requests matching these RegExps will be redirected to the mock
     # Sinatra servers in $DIR/spec/support. Any network requests that don't
     # match will attempt to access the network and raise exceptions.
-    stub_request(:post, %r{oauth2/token}).to_rack(FakeTokenEndpoint)
+    stub_request(:post, %r{oauth2/v2.0/token}).to_rack(FakeTokenEndpoint)
   end
 
   config.expect_with :rspec do |c|

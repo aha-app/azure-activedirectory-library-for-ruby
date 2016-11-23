@@ -43,7 +43,7 @@ class FakeTokenEndpoint < Sinatra::Base
   DEFAULT_ID_TOKEN = JWT.encode({ email: USERNAME }, '')
   DEFAULT_TOKEN_TYPE = 'Bearer'
 
-  post '/:tenant/oauth2/token' do
+  post '/:tenant/oauth2/v2.0/token' do
     if TENANT != params[:tenant] || CLIENT_ID != params[:client_id]
       error_oauth_response(ErrorResponseCodes::INVALID_CLIENT)
     elsif params.key?('code') && AUTH_CODE == params['code'] &&

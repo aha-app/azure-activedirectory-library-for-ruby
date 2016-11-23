@@ -76,13 +76,13 @@ module ADAL
     # Gets a token based solely on the clients credentials that were used to
     # initialize the token request.
     #
-    # @param String resource
-    #   The resource for which the requested access token will provide access.
+    # @param String scope
+    #   The scope for which the requested access token will provide access.
     # @return TokenResponse
-    def get_for_client(resource)
-      logger.verbose("TokenRequest getting token for client for #{resource}.")
+    def get_for_client(scope)
+      logger.verbose("TokenRequest getting token for client for #{scope}.")
       request(GRANT_TYPE => GrantType::CLIENT_CREDENTIALS,
-              RESOURCE => resource)
+              SCOPE => scope)
     end
 
     ##
@@ -94,17 +94,17 @@ module ADAL
     # @param String redirect_uri
     #   The redirect uri that was passed to the authentication endpoint when the
     #   auth code was acquired.
-    # @optional String resource
-    #   The resource for which the requested access token will provide access.
+    # @optional String scope
+    #   The scope for which the requested access token will provide access.
     # @return TokenResponse
-    def get_with_authorization_code(auth_code, redirect_uri, resource = nil)
+    def get_with_authorization_code(auth_code, redirect_uri, scope = nil)
       logger.verbose('TokenRequest getting token with authorization code ' \
                      "#{auth_code}, redirect_uri #{redirect_uri} and " \
-                     "resource #{resource}.")
+                     "scope #{scope}.")
       request(CODE => auth_code,
               GRANT_TYPE => GrantType::AUTHORIZATION_CODE,
               REDIRECT_URI => URI.parse(redirect_uri.to_s),
-              RESOURCE => resource)
+              SCOPE => scope)
     end
 
     ##
@@ -112,16 +112,16 @@ module ADAL
     #
     # @param String refresh_token
     #   The refresh token that was previously acquired from a token response.
-    # @optional String resource
-    #   The resource for which the requested access token will provide access.
+    # @optional String scope
+    #   The scope for which the requested access token will provide access.
     # @return TokenResponse
-    def get_with_refresh_token(refresh_token, resource = nil)
+    def get_with_refresh_token(refresh_token, scope = nil)
       logger.verbose('TokenRequest getting token with refresh token digest ' \
-                     "#{Digest::SHA256.hexdigest refresh_token} and resource " \
-                     "#{resource}.")
+                     "#{Digest::SHA256.hexdigest refresh_token} and scope " \
+                     "#{scope}.")
       request_no_cache(GRANT_TYPE => GrantType::REFRESH_TOKEN,
                        REFRESH_TOKEN => refresh_token,
-                       RESOURCE => resource)
+                       SCOPE => scope)
     end
 
     ##
@@ -131,12 +131,12 @@ module ADAL
     #   Something that can be used to verify the user. Typically a username
     #   and password. If it is a UserIdentifier, only the cache will be checked.
     #   If a matching token is not there, it will fail.
-    # @optional String resource
-    #   The resource for which the requested access token will provide access.
+    # @optional String scope
+    #   The scope for which the requested access token will provide access.
     # @return TokenResponse
-    def get_with_user_credential(user_cred, resource = nil)
+    def get_with_user_credential(user_cred, scope = nil)
       logger.verbose('TokenRequest getting token with user credential ' \
-                     "#{user_cred} and resource #{resource}.")
+                     "#{user_cred} and scope #{scope}.")
       oauth = if user_cred.is_a? UserIdentifier
                 lambda do
                   fail UserCredentialError,
@@ -144,7 +144,7 @@ module ADAL
                        'matching token in the cache.'
                 end
               end || -> {}
-      request(user_cred.request_params.merge(RESOURCE => resource), &oauth)
+      request(user_cred.request_params.merge(SCOPE => scope), &oauth)
     end
 
     private
@@ -225,6 +225,7 @@ module ADAL
     # @return OAuthRequest
     def oauth_request(params)
       logger.verbose('Resorting to OAuth to fulfill token request.')
+      logger.verbose("with params #{params.inspect}")
       OAuthRequest.new(@authority.token_endpoint, params)
     end
   end

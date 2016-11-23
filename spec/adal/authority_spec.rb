@@ -30,7 +30,7 @@ describe ADAL::Authority do
     it 'should correctly construct token endpoints' do
       auth = ADAL::Authority.new(auth_host, tenant)
       expect(auth.token_endpoint.to_s).to eq(
-        "https://#{auth_host}/#{tenant}/oauth2/token")
+        "https://#{auth_host}/#{tenant}/oauth2/v2.0/token")
     end
   end
 
@@ -39,7 +39,7 @@ describe ADAL::Authority do
       it 'should correctly construct the authorize endpoint' do
         auth = ADAL::Authority.new(auth_host, tenant)
         expect(auth.authorize_endpoint(foo: :bar).to_s).to eq(
-          "https://#{auth_host}/#{tenant}/oauth2/authorize?foo=bar")
+          "https://#{auth_host}/#{tenant}/oauth2/v2.0/authorize?foo=bar")
       end
     end
 
@@ -47,7 +47,7 @@ describe ADAL::Authority do
       it 'should correctly construct the authorize endpoint' do
         auth = ADAL::Authority.new(auth_host, tenant)
         expect(auth.authorize_endpoint.to_s).to eq(
-          "https://#{auth_host}/#{tenant}/oauth2/authorize")
+          "https://#{auth_host}/#{tenant}/oauth2/v2.0/authorize")
       end
     end
   end
@@ -100,7 +100,7 @@ describe ADAL::Authority do
       auth_host = 'notvalid.com'
       dynamic_validation_endpoint =
         'https://login.microsoftonline.com/common/discovery/instance?api-vers' \
-        "ion=1.0&authorization_endpoint=https://#{auth_host}/#{tenant}/oauth2" \
+        "ion=1.0&authorization_endpoint=https://#{auth_host}/#{tenant}/oauth2/v2.0" \
         '/authorize'
       auth = ADAL::Authority.new('notvalid.com', tenant, true)
       stub_request(:get, dynamic_validation_endpoint).to_return(status: 500)
@@ -111,7 +111,7 @@ describe ADAL::Authority do
       auth_host = 'notvalid.com'
       dynamic_validation_endpoint =
         'https://login.microsoftonline.com/common/discovery/instance?api-vers' \
-        "ion=1.0&authorization_endpoint=https://#{auth_host}/#{tenant}/oauth2" \
+        "ion=1.0&authorization_endpoint=https://#{auth_host}/#{tenant}/oauth2/v2.0" \
         '/authorize'
       auth = ADAL::Authority.new('notvalid.com', tenant, true)
       stub_request(:get, dynamic_validation_endpoint)
